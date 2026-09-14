@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RF9 CRM — Leads</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/assets/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+
+<!-- Shown only if the signed-in account has no active staff profile yet -->
+<div class="auth hidden" id="pendingState">
+  <div class="auth__card">
+    <div class="auth__brand"><img src="/assets/logo.svg" alt=""><span>RF9</span></div>
+    <h1 class="auth__title">Account Pending</h1>
+    <p class="auth__sub">Your sign-in worked, but this account hasn't been activated for the RF9 CRM yet. Ask a super admin to enable access, then refresh this page.</p>
+    <button class="btn btn--block" id="pendingSignOut">Sign Out</button>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="topbar__brand" href="/admin/index.html"><img src="/assets/logo.svg" alt=""><span>RF9</span></a>
+      <span class="topbar__tag">Lead CRM</span>
+      <div class="topbar__spacer"></div>
+      <div class="topbar__user"><span>Signed in as</span> <b id="userLabel">&mdash;</b></div>
+      <button class="btn btn--sm" id="signOutBtn">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="shell">
+    <div class="page">
+      <div class="page__head">
+        <div>
+          <h1 class="page__title">Leads</h1>
+          <p class="page__sub">All inquiries submitted through the RF9 website.</p>
+        </div>
+        <button class="btn btn--sm" id="refreshBtn">Refresh</button>
+      </div>
+
+      <div class="stats" id="statsRow" aria-label="Lead statistics"></div>
+
+      <div class="toolbar">
+        <div class="toolbar__search">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="9" r="6"/><path d="M17 17l-4-4" stroke-linecap="round"/></svg>
+          <input type="search" id="searchInput" placeholder="Search name, phone or email…">
+        </div>
+        <select id="statusFilter"><option value="">All Statuses</option></select>
+        <select id="programFilter"><option value="">All Programs</option></select>
+        <select id="sourceFilter"><option value="">All Sources</option></select>
+        <select id="dateFilter">
+          <option value="">All Time</option>
+          <option value="today">Today</option>
+          <option value="7">Last 7 Days</option>
+          <option value="30">Last 30 Days</option>
+          <option value="month">This Month</option>
+        </select>
+        <a href="#" class="toolbar__reset" id="resetFilters">Reset</a>
+        <span class="toolbar__count" id="resultCount"></span>
+      </div>
+
+      <div id="leadsRegion">
+        <div class="table-wrap">
+          <table class="leads">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Program</th>
+                <th>Status</th>
+                <th>Source</th>
+                <th>Submitted</th>
+                <th>Updated</th>
+              </tr>
+            </thead>
+            <tbody id="leadsTbody"></tbody>
+          </table>
+          <div class="state hidden" id="tableState"></div>
+          <div class="pagination hidden" id="pagination"></div>
+        </div>
+        <div class="lead-cards" id="leadCards"></div>
+        <div class="state hidden" id="cardState"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ LEAD DETAIL DRAWER ============ -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer__head">
+    <div>
+      <h2 class="drawer__name" id="drawerName">&mdash;</h2>
+      <p class="drawer__meta" id="drawerMeta"></p>
+    </div>
+    <button class="drawer__close" id="drawerClose" aria-label="Close">&times;</button>
+  </div>
+
+  <div class="drawer__actions" id="drawerActions"></div>
+
+  <div class="drawer__body" id="drawerBody">
+    <!-- filled by admin.js -->
+  </div>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/assets/supabase-client.js"></script>
+<script src="/admin/admin.js"></script>
+</body>
+</html>

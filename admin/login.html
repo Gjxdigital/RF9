@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Staff Sign In — RF9 CRM</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/assets/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+
+<div class="auth">
+  <div class="auth__card">
+    <div class="auth__brand">
+      <img src="/assets/logo.svg" alt="">
+      <span>RF9</span>
+    </div>
+    <h1 class="auth__title">Staff Sign In</h1>
+    <p class="auth__sub">Internal lead management — RF9 staff only.</p>
+
+    <div class="auth__msg is-error hidden" id="loginMsg" role="alert"></div>
+
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label for="loginEmail">Email</label>
+        <input id="loginEmail" name="email" type="email" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="btn btn--primary btn--block" type="submit" id="loginBtn">
+        <span class="btn__label">Sign In</span>
+        <span class="spinner" aria-hidden="true"></span>
+      </button>
+    </form>
+
+    <p class="auth__foot"><a href="#" id="forgotLink">Forgot your password?</a></p>
+
+    <!-- forgot-password mini form, hidden by default -->
+    <form id="forgotForm" class="hidden" novalidate style="margin-top:18px;padding-top:18px;border-top:1px solid var(--border)">
+      <div class="field">
+        <label for="forgotEmail">Send a reset link to</label>
+        <input id="forgotEmail" name="email" type="email" autocomplete="username" required>
+      </div>
+      <button class="btn btn--block" type="submit" id="forgotBtn">
+        <span class="btn__label">Send Reset Link</span>
+        <span class="spinner" aria-hidden="true"></span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/assets/supabase-client.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  function setLoading(btn, loading) {
+    btn.disabled = loading;
+    btn.classList.toggle('is-loading', loading);
+  }
+  function showMsg(kind, text) {
+    var box = document.getElementById('loginMsg');
+    box.className = 'auth__msg is-' + kind;
+    box.textContent = text;
+    box.hidden = false;
+  }
+  function hideMsg() {
+    document.getElementById('loginMsg').hidden = true;
+  }
+
+  // Already signed in? Skip straight to the dashboard.
+  window.rf9Supabase.auth.getSession().then(function (res) {
+    if (res.data && res.data.session) window.location.replace('/admin/index.html');
+  });
+
+  document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    hideMsg();
+    var email = document.getElementById('loginEmail').value.trim();
+    var password = document.getElementById('loginPassword').value;
+    var btn = document.getElementById('loginBtn');
+    setLoading(btn, true);
+
+    window.rf9Supabase.auth.signInWithPassword({ email: email, password: password })
+      .then(function (res) {
+        setLoading(btn, false);
+        if (res.error) {
+          showMsg('error', 'Invalid email or password.');
+          return;
+        }
+        window.location.replace('/admin/index.html');
+      })
+      .catch(function () {
+        setLoading(btn, false);
+        showMsg('error', 'Something went wrong. Please try again.');
+      });
+  });
+
+  var forgotLink = document.getElementById('forgotLink');
+  var forgotForm = document.getElementById('forgotForm');
+  forgotLink.addEventListener('click', function (e) {
+    e.preventDefault();
+    forgotForm.classList.toggle('hidden');
+  });
+
+  forgotForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    hideMsg();
+    var email = document.getElementById('forgotEmail').value.trim();
+    var btn = document.getElementById('forgotBtn');
+    setLoading(btn, true);
+
+    window.rf9Supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/admin/reset-password.html'
+    }).then(function () {
+      setLoading(btn, false);
+      // Always show the same message, whether or not the email exists —
+      // never reveal which emails have staff accounts.
+      showMsg('success', 'If that email has a staff account, a reset link is on its way.');
+      forgotForm.reset();
+    }).catch(function () {
+      setLoading(btn, false);
+      showMsg('success', 'If that email has a staff account, a reset link is on its way.');
+    });
+  });
+})();
+</script>
+</body>
+</html>

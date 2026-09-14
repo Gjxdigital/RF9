@@ -3,18 +3,42 @@
    ============================================================ */
 
 /* ------------------------------------------------------------
-   LEAD FORM ENDPOINT
+   LEAD FORM → SUPABASE
    ------------------------------------------------------------
-   This form currently has no backend wired up. Point it at
-   wherever leads should actually land, e.g.:
-     - Your own API:      "https://api.yoursite.com/leads"
-     - A Formspree form:  "https://formspree.io/f/xxxxxxx"
-     - A CRM webhook, Supabase edge function, Zapier catch hook, etc.
-   The form POSTs JSON: { name, phone, email, interest, message }.
-   Until this is set, submissions are only logged to the console
-   so you can see the shape of the data in devtools.
+   The form calls the `submit_lead` Postgres RPC (see assets/supabase-client.js
+   for the client + keys). That function is SECURITY DEFINER and does its own
+   validation, dedupe-by-phone/email merging, server-side rate limiting and
+   activity logging — the anon key it uses can only ever call this one RPC
+   for leads, it cannot read or modify the leads table directly (enforced by
+   RLS). Lead source is derived client-side from UTM params / referrer below,
+   never fabricated.
    ------------------------------------------------------------ */
-var RF9_LEAD_ENDPOINT = ''; // <-- set this to your endpoint URL
+function rf9DeriveLeadSource(params, referrer) {
+  var KNOWN_SOURCES = {
+    instagram: 'Instagram', ig: 'Instagram',
+    facebook: 'Facebook', fb: 'Facebook',
+    google: 'Google', tiktok: 'TikTok', whatsapp: 'WhatsApp'
+  };
+  var utmSource = (params.get('utm_source') || '').trim();
+  if (utmSource) {
+    var key = utmSource.toLowerCase();
+    return KNOWN_SOURCES[key] || (utmSource.charAt(0).toUpperCase() + utmSource.slice(1));
+  }
+  if (referrer) {
+    try {
+      var host = new URL(referrer).hostname.replace(/^www\./, '');
+      if (host === window.location.hostname) return 'Website';
+      if (host.indexOf('instagram') > -1) return 'Instagram';
+      if (host.indexOf('facebook') > -1) return 'Facebook';
+      if (host.indexOf('google') > -1) return 'Google';
+      if (host.indexOf('tiktok') > -1) return 'TikTok';
+      return 'Referral';
+    } catch (e) {
+      return 'Referral';
+    }
+  }
+  return 'Direct';
+}
 
 (function () {
   'use strict';
@@ -322,8 +346,11 @@ var RF9_LEAD_ENDPOINT = ''; // <-- set this to your endpoint URL
       submitBtn.classList.toggle('is-loading', loading);
     }
 
+    var submitting = false;
+
     leadForm.addEventListener('submit', function (e) {
       e.preventDefault();
+      if (submitting) return; // belt-and-suspenders against double-submit
 
       /* honeypot: bots fill every field, humans never see this one */
       if (leadForm.elements['company'] && leadForm.elements['company'].value) {
@@ -342,39 +369,63 @@ var RF9_LEAD_ENDPOINT = ''; // <-- set this to your endpoint URL
         phone: leadForm.elements['phone'].value.trim(),
         email: leadForm.elements['email'].value.trim(),
         interest: leadForm.elements['interest'].value,
-        message: leadForm.elements['message'].value.trim(),
-        source: 'rf9-website'
+        message: leadForm.elements['message'].value.trim()
       };
 
-      if (!RF9_LEAD_ENDPOINT) {
-        /* no backend wired up yet — log so the payload shape is visible, and
-           let the visitor know their info was captured locally, not lost */
-        console.info('[RF9 lead form] no endpoint configured, payload was:', payload);
+      if (!window.rf9Supabase) {
+        console.error('[RF9 lead form] Supabase client not available (assets/supabase-client.js failed to load)');
         setLoading(false);
-        showStatus('success', 'Thanks, ' + payload.name.split(' ')[0] + '! (Demo mode — no backend connected yet, so this wasn’t actually sent. Open the console to see the captured data.)');
-        leadForm.reset();
+        showStatus('error', 'Something went wrong sending that. Please call RF9 directly at +20 151 566 2712.');
         return;
       }
 
+      submitting = true;
       setLoading(true);
       statusBox.hidden = true;
 
-      fetch(RF9_LEAD_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-        .then(function (res) {
-          if (!res.ok) throw new Error('Request failed: ' + res.status);
-          setLoading(false);
-          showStatus('success', 'Thanks, ' + payload.name.split(' ')[0] + '! A coach will reach out shortly.');
-          leadForm.reset();
-        })
-        .catch(function (err) {
-          console.error('[RF9 lead form] submit failed:', err);
-          setLoading(false);
-          showStatus('error', 'Something went wrong sending that. Please call RF9 directly at +20 151 566 2712.');
-        });
+      var urlParams = new URLSearchParams(window.location.search);
+      var referrer = document.referrer || null;
+
+      window.rf9Supabase.rpc('submit_lead', {
+        p_name: payload.name,
+        p_email: payload.email || null,
+        p_phone: payload.phone,
+        p_program: payload.interest,
+        p_message: payload.message || null,
+        p_utm_source: urlParams.get('utm_source'),
+        p_utm_medium: urlParams.get('utm_medium'),
+        p_utm_campaign: urlParams.get('utm_campaign'),
+        p_referrer: referrer,
+        p_is_spam: false,
+        p_lead_source: rf9DeriveLeadSource(urlParams, referrer)
+      }).then(function (res) {
+        submitting = false;
+        setLoading(false);
+
+        if (res.error) {
+          console.error('[RF9 lead form] submit failed:', res.error);
+          if (String(res.error.message).indexOf('RATE_LIMITED') !== -1) {
+            showStatus('error', 'You’ve already reached out recently — the RF9 team has your details. For anything urgent, call +20 151 566 2712.');
+          } else {
+            showStatus('error', 'Something went wrong sending that. Please call RF9 directly at +20 151 566 2712.');
+          }
+          return;
+        }
+
+        var row = res.data && res.data[0];
+        var firstName = payload.name.split(' ')[0];
+        if (row && row.merged) {
+          showStatus('success', 'Thanks again, ' + firstName + '! We’ve updated your request — a coach will be in touch shortly.');
+        } else {
+          showStatus('success', 'Thanks, ' + firstName + '! A coach will reach out shortly.');
+        }
+        leadForm.reset();
+      }).catch(function (err) {
+        submitting = false;
+        console.error('[RF9 lead form] submit failed:', err);
+        setLoading(false);
+        showStatus('error', 'Something went wrong sending that. Please call RF9 directly at +20 151 566 2712.');
+      });
     });
   }
 })();
