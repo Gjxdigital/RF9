@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1250 1250" role="img" aria-label="RF9">
+  <defs>
+    <linearGradient id="rfBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3A56E8"/><stop offset="1" stop-color="#2638A8"/>
+    </linearGradient>
+    <linearGradient id="rfNavy" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1B2C8F"/><stop offset="1" stop-color="#101B55"/>
+    </linearGradient>
+    <linearGradient id="rfOrange" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0" stop-color="#FF6A2B"/><stop offset="1" stop-color="#F4512A"/>
+    </linearGradient>
+  </defs>
+  <polygon points="120,118 812,808 705,925 120,325" fill="url(#rfBlue)"/>
+  <polygon points="118,530 388,800 388,1010 118,740" fill="url(#rfNavy)"/>
+  <path d="M418 690 L600 1130 L990 780" fill="none" stroke="url(#rfNavy)" stroke-width="180" stroke-linejoin="miter"/>
+  <polygon points="950,960 1150,1140 880,1140" fill="url(#rfBlue)"/>
+  <circle cx="855" cy="400" r="248" fill="none" stroke="url(#rfOrange)" stroke-width="132"/>
+  <circle cx="1062" cy="732" r="92" fill="url(#rfNavy)"/>
+</svg>
