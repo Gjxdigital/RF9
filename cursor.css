@@ -1,0 +1,181 @@
+/* ============================================================
+   RF9 — custom cursor system
+   Desktop / fine-pointer only. Never hides native cursor until
+   init has actually succeeded (see cursor.js). Purely decorative,
+   pointer-events:none throughout — cannot block clicks or text
+   selection.
+   ============================================================ */
+
+html.rf9-cursor-on,
+html.rf9-cursor-on a,
+html.rf9-cursor-on button,
+html.rf9-cursor-on .brand,
+html.rf9-cursor-on .program,
+html.rf9-cursor-on .coach,
+html.rf9-cursor-on .cbtn{
+  cursor:none;
+}
+/* text-editable fields keep the native text/pointer cursor and are
+   excluded from the custom system entirely — see cursor.js */
+html.rf9-cursor-on input,
+html.rf9-cursor-on textarea,
+html.rf9-cursor-on select{
+  cursor:auto;
+}
+
+#rf9-cursor{
+  position:fixed;inset:0;width:0;height:0;pointer-events:none;z-index:10050;
+}
+
+.rfc-ring,
+.rfc-dot,
+.rfc-mono,
+.rfc-label{
+  position:fixed;top:0;left:0;pointer-events:none;will-change:transform;
+}
+
+.rfc-ring{
+  width:30px;height:30px;margin:-15px 0 0 -15px;
+  border-radius:50%;
+  border:1px solid rgba(238,241,250,.5);
+  box-sizing:border-box;
+  transition:width .32s cubic-bezier(.2,.8,.2,1),height .32s cubic-bezier(.2,.8,.2,1),
+             margin .32s cubic-bezier(.2,.8,.2,1),border-color .3s ease,
+             opacity .22s ease,background-color .3s ease,transform-origin .01s;
+  z-index:10050;
+}
+.rfc-ring::after{
+  /* minimal orange accent — a short arc segment, not a full ring */
+  content:"";position:absolute;top:-1px;left:50%;width:8px;height:2px;
+  margin-left:-4px;background:var(--orange,#F4512A);border-radius:2px;
+  transition:opacity .25s ease,transform .3s ease;
+  opacity:.55;
+}
+
+.rfc-dot{
+  width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;
+  background:var(--off,#EEF1FA);
+  transition:opacity .2s ease,background-color .3s ease,transform .25s cubic-bezier(.2,.8,.2,1);
+  z-index:10052;
+}
+
+/* four crosshair ticks, hidden by default, drawn in on hover states */
+.rfc-cross i{
+  position:absolute;display:block;background:rgba(238,241,250,.65);
+  opacity:0;transition:opacity .22s ease,transform .32s cubic-bezier(.2,.8,.2,1);
+}
+.rfc-cross i:nth-child(1){top:-9px;left:50%;width:1px;height:5px;margin-left:-.5px;transform:translateY(4px)}
+.rfc-cross i:nth-child(2){bottom:-9px;left:50%;width:1px;height:5px;margin-left:-.5px;transform:translateY(-4px)}
+.rfc-cross i:nth-child(3){left:-9px;top:50%;width:5px;height:1px;margin-top:-.5px;transform:translateX(4px)}
+.rfc-cross i:nth-child(4){right:-9px;top:50%;width:5px;height:1px;margin-top:-.5px;transform:translateX(-4px)}
+
+.rfc-label{
+  margin:16px 0 0 -1px;
+  font-family:"Archivo","Arial Narrow",system-ui,sans-serif;
+  font-weight:700;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--off,#EEF1FA);white-space:nowrap;
+  opacity:0;transform:translateY(2px);
+  transition:opacity .2s ease,transform .25s cubic-bezier(.2,.8,.2,1);
+  z-index:10052;
+}
+.rfc-label i{color:var(--orange,#F4512A);font-style:normal;margin:0 .3em}
+
+/* ---------- interactive state ---------- */
+#rf9-cursor.is-active .rfc-ring{
+  width:52px;height:52px;margin:-26px 0 0 -26px;
+  border-color:rgba(238,241,250,.7);background:rgba(238,241,250,.04);
+}
+#rf9-cursor.is-active .rfc-ring::after{opacity:.85}
+#rf9-cursor.is-active .rfc-cross i{opacity:1}
+#rf9-cursor.is-active .rfc-cross i:nth-child(1){transform:translateY(0)}
+#rf9-cursor.is-active .rfc-cross i:nth-child(2){transform:translateY(0)}
+#rf9-cursor.is-active .rfc-cross i:nth-child(3){transform:translateX(0)}
+#rf9-cursor.is-active .rfc-cross i:nth-child(4){transform:translateX(0)}
+#rf9-cursor.is-active .rfc-dot{opacity:0}
+#rf9-cursor.has-label .rfc-label{opacity:1;transform:translateY(0)}
+
+/* ---------- CTA / precision target state ---------- */
+#rf9-cursor.is-cta .rfc-ring{
+  width:44px;height:44px;margin:-22px 0 0 -22px;
+  border-color:var(--orange,#F4512A);background:rgba(244,81,42,.08);
+}
+#rf9-cursor.is-cta .rfc-ring::after{opacity:0}
+#rf9-cursor.is-cta .rfc-dot{opacity:1;background:var(--orange,#F4512A);transform:scale(1.1)}
+#rf9-cursor.is-cta .rfc-cross i{background:var(--orange,#F4512A);opacity:1}
+#rf9-cursor.is-cta .rfc-cross i:nth-child(1),
+#rf9-cursor.is-cta .rfc-cross i:nth-child(2){height:6px}
+#rf9-cursor.is-cta .rfc-cross i:nth-child(3),
+#rf9-cursor.is-cta .rfc-cross i:nth-child(4){width:6px}
+/* corner brackets — the "precision target" read */
+.rfc-corners span{
+  position:absolute;width:7px;height:7px;opacity:0;
+  transition:opacity .22s ease,transform .3s cubic-bezier(.2,.8,.2,1);
+  border:1px solid var(--orange,#F4512A);
+}
+.rfc-corners span:nth-child(1){top:-24px;left:-24px;border-width:1px 0 0 1px}
+.rfc-corners span:nth-child(2){top:-24px;right:-24px;border-width:1px 1px 0 0}
+.rfc-corners span:nth-child(3){bottom:-24px;left:-24px;border-width:0 0 1px 1px}
+.rfc-corners span:nth-child(4){bottom:-24px;right:-24px;border-width:0 1px 1px 0}
+#rf9-cursor.is-cta .rfc-corners span{opacity:.9}
+#rf9-cursor.is-cta .rfc-corners span:nth-child(1){transform:translate(3px,3px)}
+#rf9-cursor.is-cta .rfc-corners span:nth-child(2){transform:translate(-3px,3px)}
+#rf9-cursor.is-cta .rfc-corners span:nth-child(3){transform:translate(3px,-3px)}
+#rf9-cursor.is-cta .rfc-corners span:nth-child(4){transform:translate(-3px,-3px)}
+
+/* ---------- logo monogram state ---------- */
+#rf9-cursor.is-logo .rfc-ring,
+#rf9-cursor.is-logo .rfc-dot,
+#rf9-cursor.is-logo .rfc-cross i{opacity:0}
+.rfc-mono{
+  width:26px;height:26px;margin:-13px 0 0 -13px;
+  opacity:0;transform:scale(.6) rotate(-8deg);
+  transition:opacity .28s cubic-bezier(.2,.8,.2,1),transform .34s cubic-bezier(.2,.8,.2,1);
+  z-index:10053;
+}
+#rf9-cursor.is-logo .rfc-mono{opacity:1;transform:scale(1) rotate(0deg)}
+
+/* ---------- phone / swipe state ---------- */
+#rf9-cursor.is-phone .rfc-ring{
+  width:38px;height:38px;margin:-19px 0 0 -19px;
+  border-color:rgba(238,241,250,.4);background:transparent;
+}
+#rf9-cursor.is-phone .rfc-ring::after{opacity:0}
+#rf9-cursor.is-phone .rfc-dot{opacity:0}
+#rf9-cursor.is-phone .rfc-cross i{opacity:0}
+#rf9-cursor.is-phone .rfc-swipe{opacity:1;transform:translateY(0)}
+.rfc-swipe{
+  position:fixed;top:0;left:0;margin:16px 0 0 -1px;
+  font-family:"Archivo","Arial Narrow",system-ui,sans-serif;
+  font-weight:700;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--off,#EEF1FA);white-space:nowrap;display:flex;align-items:center;gap:.4em;
+  opacity:0;transform:translateY(2px);
+  transition:opacity .2s ease,transform .25s cubic-bezier(.2,.8,.2,1);
+  z-index:10052;pointer-events:none;
+}
+.rfc-swipe b{
+  font-weight:400;color:var(--orange,#F4512A);display:inline-block;
+  animation:rfcSwipeNudge 1.4s ease-in-out infinite;
+}
+.rfc-swipe b:last-child{animation-delay:.15s}
+@keyframes rfcSwipeNudge{
+  0%,100%{transform:translateX(0);opacity:.55}
+  50%{transform:translateX(-2px);opacity:1}
+}
+.rfc-swipe b:last-child{transform:scaleX(-1)}
+@keyframes rfcSwipeNudgeR{0%,100%{transform:scaleX(-1) translateX(0)}50%{transform:scaleX(-1) translateX(-2px)}}
+
+/* ---------- pressed / mousedown weight ---------- */
+#rf9-cursor.is-down .rfc-dot{transform:scale(.7)}
+#rf9-cursor.is-down .rfc-ring{opacity:.7}
+
+/* ---------- hidden (left window / over text field) ---------- */
+#rf9-cursor.is-hidden .rfc-ring,
+#rf9-cursor.is-hidden .rfc-dot,
+#rf9-cursor.is-hidden .rfc-mono,
+#rf9-cursor.is-hidden .rfc-label,
+#rf9-cursor.is-hidden .rfc-swipe,
+#rf9-cursor.is-hidden .rfc-corners span{opacity:0}
+
+@media (prefers-reduced-motion:reduce){
+  .rfc-swipe b{animation:none}
+}

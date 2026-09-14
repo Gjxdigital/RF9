@@ -511,7 +511,9 @@ a{color:inherit;text-decoration:none}
 .phone{
   position:relative;width:min(300px,78vw);
   animation:floatY 7s ease-in-out infinite;
+  transition:transform .4s cubic-bezier(.2,.8,.2,1);
 }
+.phone.is-tilting{animation-play-state:paused}
 @keyframes floatY{0%,100%{transform:translateY(-8px)}50%{transform:translateY(8px)}}
 .phone__frame{
   position:relative;border-radius:44px;padding:11px;

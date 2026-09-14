@@ -15,6 +15,7 @@
 <link rel="preconnect" href="https://images.unsplash.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="cursor.css">
 <style>html.is-loading{overflow:hidden}</style>
 <noscript><style>.loader{display:none!important}html{overflow:auto!important}</style></noscript>
 <script>document.documentElement.classList.add('is-loading');</script>
@@ -39,7 +40,7 @@
 <!-- ============ NAV ============ -->
 <header class="nav" id="nav">
   <div class="nav__inner">
-    <a class="brand" href="#top" aria-label="RF9 home">
+    <a class="brand" href="#top" aria-label="RF9 home" data-cursor="logo">
       <img src="assets/logo.svg" alt="" class="brand__mark">
       <span class="brand__word">RF9</span>
     </a>
@@ -51,7 +52,7 @@
       <a href="#testimonials">Testimonials</a>
       <a href="#contact">Contact</a>
     </nav>
-    <a class="btn btn--solid nav__cta" href="#start" data-magnetic>Join RF9</a>
+    <a class="btn btn--solid nav__cta" href="#start" data-magnetic data-cursor="cta" data-cursor-label="JOIN">Join RF9</a>
     <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
       <span></span><span></span>
     </button>
@@ -68,8 +69,8 @@
     <a href="#contact">Contact</a>
   </nav>
   <div class="mobile-menu__foot">
-    <a class="btn btn--solid" href="#start">Join RF9</a>
-    <a class="btn btn--ghost" href="tel:+201515662712">Call RF9</a>
+    <a class="btn btn--solid" href="#start" data-cursor="cta" data-cursor-label="JOIN">Join RF9</a>
+    <a class="btn btn--ghost" href="tel:+201515662712" data-cursor="interactive" data-cursor-label="CALL">Call RF9</a>
   </div>
 </div>
 
@@ -93,8 +94,8 @@
       At RF9, every session is designed to push your performance further.
     </p>
     <div class="hero__actions reveal" data-delay="3">
-      <a class="btn btn--solid btn--lg" href="#start" data-magnetic>Start Training</a>
-      <a class="btn btn--ghost btn--lg" href="#about" data-magnetic>Explore RF9</a>
+      <a class="btn btn--solid btn--lg" href="#start" data-magnetic data-cursor="cta" data-cursor-label="START">Start Training</a>
+      <a class="btn btn--ghost btn--lg" href="#about" data-magnetic data-cursor="interactive" data-cursor-label="EXPLORE">Explore RF9</a>
     </div>
   </div>
 
@@ -122,7 +123,7 @@
       <p class="lead lead--muted reveal" data-delay="3">
         Every session has intent. Nothing is random.
       </p>
-      <a class="link-arrow reveal" data-delay="4" href="#training">See the programs <i></i></a>
+      <a class="link-arrow reveal" data-delay="4" href="#training" data-cursor="interactive" data-cursor-label="VIEW">See the programs <i></i></a>
     </div>
     <figure class="intro__media reveal" data-delay="2">
       <img src="https://images.unsplash.com/photo-1550345332-09e3ac987658?w=1400&q=80&auto=format&fit=crop"
@@ -151,7 +152,7 @@
     </header>
 
     <div class="programs">
-      <a class="program reveal" href="#start">
+      <a class="program reveal" href="#start" data-cursor="interactive" data-cursor-label="VIEW">
         <div class="program__media">
           <img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=1200&q=80&auto=format&fit=crop" alt="CrossFit barbell training" loading="lazy">
         </div>
@@ -161,7 +162,7 @@
           <span class="link-arrow">Explore <i></i></span>
         </div>
       </a>
-      <a class="program reveal" data-delay="1" href="#start">
+      <a class="program reveal" data-delay="1" href="#start" data-cursor="interactive" data-cursor-label="VIEW">
         <div class="program__media">
           <img src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=1200&q=80&auto=format&fit=crop" alt="Functional fitness conditioning" loading="lazy">
         </div>
@@ -171,7 +172,7 @@
           <span class="link-arrow">Explore <i></i></span>
         </div>
       </a>
-      <a class="program reveal" data-delay="2" href="#start">
+      <a class="program reveal" data-delay="2" href="#start" data-cursor="interactive" data-cursor-label="VIEW">
         <div class="program__media">
           <img src="https://images.unsplash.com/photo-1605296867304-46d5465a13f1?w=1200&q=80&auto=format&fit=crop" alt="Strength and conditioning session" loading="lazy">
         </div>
@@ -181,7 +182,7 @@
           <span class="link-arrow">Explore <i></i></span>
         </div>
       </a>
-      <a class="program reveal" data-delay="3" href="#start">
+      <a class="program reveal" data-delay="3" href="#start" data-cursor="interactive" data-cursor-label="VIEW">
         <div class="program__media">
           <img src="https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=1200&q=80&auto=format&fit=crop" alt="One to one coaching" loading="lazy">
         </div>
@@ -232,13 +233,13 @@
         <li>Structured, long-term training plans</li>
       </ul>
       <div class="app__actions reveal" data-delay="4">
-        <a class="btn btn--solid btn--lg" href="https://apps.apple.com/eg/app/rf9/id6776880317" target="_blank" rel="noopener" data-magnetic>Get the RF9 App</a>
-        <a class="link-arrow" href="#start">Online Coaching <i></i></a>
+        <a class="btn btn--solid btn--lg" href="https://apps.apple.com/eg/app/rf9/id6776880317" target="_blank" rel="noopener" data-magnetic data-cursor="cta" data-cursor-label="GET APP">Get the RF9 App</a>
+        <a class="link-arrow" href="#start" data-cursor="interactive" data-cursor-label="VIEW">Online Coaching <i></i></a>
       </div>
     </div>
 
     <div class="app__visual reveal" data-delay="2">
-      <div class="phone" data-parallax="0.06">
+      <div class="phone" data-parallax="0.06" data-cursor="phone" data-cursor-label="SWIPE">
         <div class="phone__frame">
           <div class="phone__screen">
             <div class="ui">
@@ -409,7 +410,7 @@
       </div>
 
       <div class="field field--wide lead__submit-row">
-        <button class="btn btn--solid btn--lg" type="submit" id="leadSubmit" data-magnetic>
+        <button class="btn btn--solid btn--lg" type="submit" id="leadSubmit" data-magnetic data-cursor="cta" data-cursor-label="GO">
           <span class="btn__label">Get Started</span>
           <span class="btn__spinner" aria-hidden="true"></span>
         </button>
@@ -435,8 +436,8 @@
       </dl>
       <div class="location__actions reveal" data-delay="4">
         <a class="btn btn--solid btn--lg" target="_blank" rel="noopener" data-magnetic
-           href="https://maps.google.com/maps/place//data=!4m2!3m1!1s0x14581973985d6011:0x79b90a5e2970f001?entry=s&amp;sa=X&amp;ved=2ahUKEwjV04up7O6WAxXNe6QEHci-FoMQ4kB6BAgVEAA&amp;hl=en">Get Directions</a>
-        <a class="btn btn--ghost btn--lg" href="tel:+201515662712" data-magnetic>Call RF9</a>
+           href="https://maps.google.com/maps/place//data=!4m2!3m1!1s0x14581973985d6011:0x79b90a5e2970f001?entry=s&amp;sa=X&amp;ved=2ahUKEwjV04up7O6WAxXNe6QEHci-FoMQ4kB6BAgVEAA&amp;hl=en" data-cursor="cta" data-cursor-label="OPEN">Get Directions</a>
+        <a class="btn btn--ghost btn--lg" href="tel:+201515662712" data-magnetic data-cursor="interactive" data-cursor-label="CALL">Call RF9</a>
       </div>
     </div>
     <div class="location__map reveal" data-delay="2">
@@ -457,8 +458,8 @@
     <h2 class="final__title reveal">Ready to put<br>in the work?</h2>
     <p class="final__copy reveal" data-delay="1">Your strongest version starts with your next session.</p>
     <div class="final__actions reveal" data-delay="2">
-      <a class="btn btn--solid btn--lg" href="tel:+201515662712" data-magnetic>Join RF9</a>
-      <a class="btn btn--ghost btn--lg" href="https://apps.apple.com/eg/app/rf9/id6776880317" target="_blank" rel="noopener" data-magnetic>Get the RF9 App</a>
+      <a class="btn btn--solid btn--lg" href="tel:+201515662712" data-magnetic data-cursor="cta" data-cursor-label="JOIN">Join RF9</a>
+      <a class="btn btn--ghost btn--lg" href="https://apps.apple.com/eg/app/rf9/id6776880317" target="_blank" rel="noopener" data-magnetic data-cursor="cta" data-cursor-label="GET APP">Get the RF9 App</a>
     </div>
     <p class="final__words reveal" data-delay="3">Power <span>·</span> Discipline <span>·</span> Performance <span>·</span> Community</p>
   </div>
@@ -470,7 +471,7 @@
 <footer class="footer">
   <div class="shell footer__grid">
     <div class="footer__brand">
-      <a class="brand" href="#top"><img src="assets/logo.svg" alt="" class="brand__mark"><span class="brand__word">RF9</span></a>
+      <a class="brand" href="#top" data-cursor="logo"><img src="assets/logo.svg" alt="" class="brand__mark"><span class="brand__word">RF9</span></a>
       <p>Cross training &amp; functional fitness.<br>In the gym and in the app.</p>
       <div class="socials">
         <a href="https://www.instagram.com/rf9.eg?stkn=Z3o0cDMwNG5zOHB5" target="_blank" rel="noopener" aria-label="RF9 on Instagram">
@@ -508,5 +509,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="assets/supabase-client.js"></script>
 <script src="main.js"></script>
+<script src="cursor.js"></script>
 </body>
 </html>
