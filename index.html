@@ -15,8 +15,25 @@
 <link rel="preconnect" href="https://images.unsplash.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<style>html.is-loading{overflow:hidden}</style>
+<noscript><style>.loader{display:none!important}html{overflow:auto!important}</style></noscript>
+<script>document.documentElement.classList.add('is-loading');</script>
 </head>
 <body>
+
+<!-- ============ LOADER ============ -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader__glow"></div>
+  <div class="loader__content">
+    <div class="loader__mark">
+      <img src="assets/logo.svg" alt="" class="loader__logo">
+    </div>
+    <p class="loader__word">RF9</p>
+    <div class="loader__bar"><span id="loaderFill"></span></div>
+    <p class="loader__tag">Built For More.</p>
+  </div>
+</div>
+
 <div class="grain" aria-hidden="true"></div>
 
 <!-- ============ NAV ============ -->

@@ -21,6 +21,49 @@ var RF9_LEAD_ENDPOINT = ''; // <-- set this to your endpoint URL
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* ---------- loader ---------- */
+  (function () {
+    var loader = document.getElementById('loader');
+    if (!loader) return;
+
+    var fill = document.getElementById('loaderFill');
+    var minVisible = reduced ? 250 : 1000; // perceived-premium floor, skipped for reduced motion
+    var hardTimeout = 6000; // never block the site if a resource stalls
+    var shown = performance.now();
+    var released = false;
+
+    function release() {
+      if (released) return;
+      released = true;
+
+      var elapsed = performance.now() - shown;
+      var wait = Math.max(0, minVisible - elapsed);
+
+      setTimeout(function () {
+        if (fill) fill.style.width = '100%';
+        setTimeout(function () {
+          loader.classList.add('is-hidden');
+          document.documentElement.classList.remove('is-loading');
+          loader.addEventListener('transitionend', function onEnd(e) {
+            if (e.target !== loader) return;
+            loader.removeEventListener('transitionend', onEnd);
+            loader.hidden = true;
+          });
+        }, reduced ? 0 : 220);
+      }, wait);
+    }
+
+    var winLoaded = new Promise(function (resolve) {
+      if (document.readyState === 'complete') resolve();
+      else window.addEventListener('load', resolve, { once: true });
+    });
+    var timedOut = new Promise(function (resolve) {
+      setTimeout(resolve, hardTimeout);
+    });
+
+    Promise.race([winLoaded, timedOut]).then(release);
+  })();
+
   /* ---------- year ---------- */
   var year = document.getElementById('year');
   if (year) year.textContent = new Date().getFullYear();
