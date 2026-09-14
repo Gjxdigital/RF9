@@ -286,9 +286,10 @@ a{color:inherit;text-decoration:none}
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   display:flex;flex-direction:column;justify-content:center;gap:40px;
   padding:110px var(--pad) 48px;
-  opacity:0;transition:opacity .4s var(--ease);
+  opacity:0;pointer-events:none;transition:opacity .4s var(--ease);
 }
-.mobile-menu.is-open{opacity:1}
+.mobile-menu.is-open{opacity:1;pointer-events:auto}
+.mobile-menu[hidden]{display:none}
 .mobile-menu nav{display:flex;flex-direction:column;gap:6px}
 .mobile-menu nav a{
   font-family:var(--display);font-weight:800;font-stretch:110%;
